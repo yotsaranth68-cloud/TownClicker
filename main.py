@@ -1,27 +1,51 @@
-# เพิ่มเติมใน main.py
 import pygame
+import sys
 from entities import Character
 from ui import ClickButton
-from upgrades import GymMember, TimeMachine # นำเข้าคลาสอัปเกรด
+from upgrades import GymMember, TimeMachine
 
-# ... (setup pygame เหมือนเดิม)
+# 1. ต้อง init ก่อนเสมอ! (สำคัญมาก)
+pygame.init() 
 
+screen = pygame.display.set_mode((800, 600))
+pygame.display.set_caption("LifeClicker")
+
+font = pygame.font.SysFont("Arial", 24) 
+large_font = pygame.font.SysFont("Arial", 40, bold=True)
+
+# 2. ย้ายการสร้าง Object ที่ใช้ Font มาไว้หลัง init
 player = Character()
-# สร้าง List สำหรับเก็บไอเทมอัปเกรด
+
+# สร้างไอเทมอัปเกรด
 upgrades = [
     GymMember("Gym Membership", base_cost=10, multiplier=0.5),
     TimeMachine("Time Machine", base_cost=50, multiplier=1.0)
 ]
 
-# สร้างปุ่มสำหรับอัปเกรด (วางไว้ด้านข้าง)
+# สร้างปุ่ม (ตรงนี้แหละที่เคย Error เพราะมันเรียกใช้ Font ใน ui.py)
 upgrade_buttons = []
 for i, upg in enumerate(upgrades):
     btn = ClickButton(550, 100 + (i * 100), 220, 60, f"Buy {upg.name}", (100, 100, 100))
     upgrade_buttons.append(btn)
 
-# ตัวแปรควบคุมเวลา
+# ปุ่มคลิกหลัก
+click_btn = ClickButton(300, 450, 200, 80, "LIVE 1 YEAR", (70, 130, 180))
+
 last_update_time = pygame.time.get_ticks()
 
+# ในส่วน Setup ของ main.py
+try:
+    bg_images = {
+        "home.png": pygame.image.load("assets/home.png").convert(),
+        "school.png": pygame.image.load("assets/school.png").convert(),
+        "train.png": pygame.image.load("assets/train.png").convert(),
+        "park.png": pygame.image.load("assets/park.png").convert()
+    }
+except pygame.error:
+    # ถ้าโหลดไม่สำเร็จ ให้สร้าง Surface เปล่ากันโปรแกรมพัง (Fallback)
+    print("Warning: Asset images not found, using placeholders.")
+    bg_images = {k: pygame.Surface((800, 600)) for k in ["home.png", "school.png", "train.png", "park.png"]}
+    
 while True:
     current_time = pygame.time.get_ticks()
     
@@ -51,11 +75,25 @@ while True:
         last_update_time = current_time
 
     # --- 3. Rendering ---
-    # (วาดตัวละครและ Text เหมือนเดิม)
-    # เพิ่มการวาดปุ่มอัปเกรด
+    screen.fill((240, 240, 240)) # 1. ล้างหน้าจอด้วยสีพื้นหลัง (ต้องทำทุกเฟรม)
+
+    # 2. วาดสถานะตัวละคร
+    stage = player.get_stage_info()
+    # วาดสี่เหลี่ยมตัวละคร
+    pygame.draw.rect(screen, stage["color"], (350, 200, 100, 150), border_radius=15)
+    
+    # 3. วาดข้อความ (Text)
+    # ใช้ font ที่เราเพิ่งประกาศแก้ Error ไปเมื่อกี้
+    age_text = font.render(f"Age: {player.age} Years", True, (50, 50, 50))
+    screen.blit(age_text, (20, 20))
+    
+    stage_text = font.render(f"Stage: {stage['name']}", True, stage["color"])
+    screen.blit(stage_text, (20, 70))
+
+    # 4. วาดปุ่ม
+    click_btn.draw(screen)
     for btn in upgrade_buttons:
         btn.draw(screen)
-    
-    # แสดงค่าสถิติปัจจุบัน
-    stat_text = font.render(f"Speed: {player.years_per_click}y/click | Auto: {player.auto_growth_rate}y/s", True, (100, 100, 100))
-    screen.blit(stat_text, (20, 550))
+
+    # 5. แสดงผลที่วาดทั้งหมด (สำคัญมาก! ถ้าไม่มีหน้าจอจะดำ)
+    pygame.display.flip()

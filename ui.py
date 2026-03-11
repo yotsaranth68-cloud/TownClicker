@@ -5,7 +5,7 @@ class ClickButton:
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
         self.color = color
-        self.font = pygame.font.SysFont("Arial", 32)
+        self.font = pygame.font.SysFont("Arial", 22)
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, self.rect, border_radius=12)

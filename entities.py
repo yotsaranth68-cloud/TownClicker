@@ -25,3 +25,30 @@ class Character:
             return {"name": "Adult", "color": (34, 139, 34)} # สีเขียว
         else:
             return {"name": "Elder", "color": (169, 169, 169)} # สีเทา   
+        
+# entities.py
+def get_stage_info(self):
+    if self._age < 12:
+        return {
+            "name": "Child", 
+            "color": (135, 206, 235),
+            "bg_image": "home.png" # ชื่อไฟล์ภาพพื้นหลังตอนเด็ก
+        }
+    elif self._age < 20:
+        return {
+            "name": "Teenager", 
+            "color": (255, 105, 180),
+            "bg_image": "school.png"
+        }
+    elif self._age < 60:
+        return {
+            "name": "Adult", 
+            "color": (34, 139, 34),
+            "bg_image": "train.png" # เปลี่ยนเป็นรถไฟตอนเป็นผู้ใหญ่
+        }
+    else:
+        return {
+            "name": "Elder", 
+            "color": (169, 169, 169),
+            "bg_image": "park.png"
+        }
