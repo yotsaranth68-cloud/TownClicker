@@ -4,10 +4,12 @@ class Character:
     def __init__(self):
         self._age = 0  # Encapsulation: ซ่อนข้อมูลไว้ภายใน
         self.years_per_click = 1
-        
-    def grow(self):
-        """Method สำหรับการเพิ่มอายุ (Single Responsibility)"""
-        self._age += self.years_per_click
+        self.auto_growth_rate = 0 # อายุที่จะเพิ่มขึ้นเองต่อวินาที
+    def grow(self, amount=None):
+        if amount is None:
+            self._age += self.years_per_click
+        else:
+            self._age += amount
 
     @property
     def age(self):
@@ -22,4 +24,4 @@ class Character:
         elif self._age < 60:
             return {"name": "Adult", "color": (34, 139, 34)} # สีเขียว
         else:
-            return {"name": "Elder", "color": (169, 169, 169)} # สีเทา
+            return {"name": "Elder", "color": (169, 169, 169)} # สีเทา   
