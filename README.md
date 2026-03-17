@@ -89,8 +89,8 @@ shop_items: list[BuildingType] = [
 คลิกขวา
 Open in Terminal
 ```bash
-git clone https://github.com/yotsaranth68-cloud/LifeClicker.git
-cd LifeClicker
+git clone https://github.com/yotsaranth68-cloud/TownClicker.git
+cd TownClicker
 pip install -r requirements.txt
 python main.py
 ```
